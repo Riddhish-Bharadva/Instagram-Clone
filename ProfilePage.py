@@ -34,7 +34,7 @@ class ProfilePage(webapp2.RequestHandler):
                 userLoggedIn = userDB_Reference
             else: # If user record exist in DB, variable will not be None.
                 userLoggedIn = userDB_Reference
-            posts_Data = PostsDB.query(PostsDB.user_Email == userLoggedIn.user_Email).order(-PostsDB.post_DateTime).get()
+            posts_Data = PostsDB.query(PostsDB.user_Email == userLoggedIn.user_Email).get()
             if posts_Data != None:
                 NumberOfPosts = len(posts_Data.post_Caption)
                 for i in range(0,NumberOfPosts):
@@ -82,6 +82,8 @@ class CreateNewPost(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
         userLoggedIn = users.get_current_user()
         post_Caption = self.request.get('NewPostCaption')
+        if post_Caption == "":
+            post_Caption = "No caption given"
         DateTimeValue = datetime.now()
         Image = self.get_uploads()[0]
         PostsDB_Reference = PostsDB.query(PostsDB.user_Email == userLoggedIn.email()).get()
