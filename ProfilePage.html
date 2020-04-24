@@ -5,6 +5,18 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   </head>
+  <script>
+    function checkfile()
+    {
+      var fileName = document.getElementById("NewPostImage").value.toLowerCase();
+      if(!fileName.endsWith('.png') && !fileName.endsWith('.jpg'))
+      {
+        alert("Images with extensions .png or .jpg are allowed to upload.");
+        document.getElementById('CreatNewPostForm').reset();
+        return false;
+      }
+    }
+  </script>
   <style>
     .ProfilePageBody
     {
@@ -29,6 +41,17 @@
       margin-top:1%;
       border-radius: 10px;
     }
+    .notificationBar
+    {
+      padding:10px;
+      font-size:15px;
+      border-radius:5px;
+    }
+    .DetailsTable
+    {
+      border:1px black solid;
+      padding:10px;
+    }
   </style>
   <body>
     <center>
@@ -42,7 +65,7 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/timeline">Cloud Computing Assignment 3</a>
+                <a class="navbar-brand" href="/ProfilePage">Cloud Computing Assignment 3</a>
               </div>
               <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
@@ -53,7 +76,7 @@
                     <li><a href="/following">Following</a></li>
                     <li><a href="" data-toggle="modal" data-target="#SearchUserModal">Search User</a></li>
                   {% else %}
-                    <li><a href="/">No Username for logged in user. Hence, no navigation available.</a></li>
+                    <li><a href="/ProfilePage">Username not selected for logged in user yet. Hence, no navigation options are available.</a></li>
                   {% endif %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
@@ -63,19 +86,137 @@
             </div>
           </nav>
           <div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div>
-          <marquee>
-            Welcome {{ userLoggedIn.user_Email }} to clone of Instagram.
-          </marquee>
+          {% if notification == "" %}
+            <div class="notificationBar" style="background:Yellow;">
+              All notifications for any operations performed will be displayed here.
+            </div>
+          {% elif notification == "Username Selected" %}
+            <div class="notificationBar" style="background:Green;color:white;">
+              Username have been successfully updated for {{ userLoggedIn.user_Email }}.
+            </div>
+          {% elif notification == "Username Already Exist" %}
+            <div class="notificationBar" style="background:Red;color:white;">
+              Username selected already exist for some other user. Please try again.
+            </div>
+          {% endif %}
           <div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div>
-          <br>
+          <div class="row">
+            <div class="col-sm-12"><br></div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">Displaying your profile details as below</div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4"><div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div></div>
+            <div class="col-sm-4"></div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3 DetailsTable">Email id :</div>
+            <div class="col-sm-3 DetailsTable">{{ userLoggedIn.user_Email }}</div>
+            <div class="col-sm-3"></div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3 DetailsTable">Username :</div>
+            <div class="col-sm-3 DetailsTable">
+              {% if userLoggedIn.user_Name %}
+                {{ userLoggedIn.user_Name }}
+              {% else %}
+                Username not defined by user yet.
+              {% endif %}
+            </div>
+            <div class="col-sm-3"></div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3 DetailsTable">Followers :</div>
+            <div class="col-sm-3 DetailsTable">
+              {% if followers_count != 0 %}
+                <span title="Click to view list of followers">
+                  <a href="/followers">{{ followers_count }}</a>
+                </span>
+              {% else %}
+                0
+              {% endif %}
+            </div>
+            <div class="col-sm-3"></div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3 DetailsTable">Following :</div>
+            <div class="col-sm-3 DetailsTable">
+              {% if following_count != 0 %}
+                <span title="Click to view list of following">
+                  <a href="/following">{{ following_count }}</a>
+                </span>
+              {% else %}
+                0
+              {% endif %}
+            </div>
+            <div class="col-sm-3"></div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12"><br></div>
+          </div>
+          <div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div>
+          <div class="row">
+            <div class="col-sm-12"><br></div>
+          </div>
           {% if userLoggedIn.user_Name %}
             {% if posts_Data %}
-              Displaying posts here.
+              {% for i in range(NumberOfPosts-1,-1,-1) %}
+                <div class="row">
+                  <div class="col-sm-2"></div>
+                  <div class="col-sm-8 DetailsTable">
+                    Post Caption : {{ posts_Data.post_Caption[i] }}
+                  </div>
+                  <div class="col-sm-2"></div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-2"></div>
+                  <div class="col-sm-8 DetailsTable">
+                    <img src="{{ image_Data[i] }}" alt="Error while displaying image." style="max-width:500px;max-height:600px;">
+                  </div>
+                  <div class="col-sm-2"></div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12"><br><br></div>
+                </div>
+              {% endfor %}
             {% else %}
               No posts to display.
             {% endif %}
           {% else %}
-            
+            <form action="/" method="post">
+              <div class="row">
+                <div class="col-sm-12"><br><br><br></div>
+              </div>
+              <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                  <center>
+                    <input type='textbox' class="form-control" name='FirstTimeUserName' id='FirstTimeUserName' placeholder="Select your profile's Username" /required>
+                  </center>
+                </div>
+                <div class="col-sm-3"></div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12"><br><br></div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                  <input type='submit' class="btn btn-default" name="submitButton" id="FirstTimeUserNameButton" value="Select">
+                  <input type="reset" class="btn btn-default" value="Reset">
+                </div>
+                <div class="col-sm-4"></div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12"><br><br><br></div>
+              </div>
+            </form>
           {% endif %}
           <br>
           <br>
@@ -91,21 +232,33 @@
         {% endif %}
       </div>
 
-<!-- Create Post Modal Code Starts Here -->
+<!-- Create New Post Modal Code Starts Here -->
       <div name="NewTaskBoardModal" id="NewTaskBoardModal" style="margin-top:10%;" class="modal fade" role="dialog">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Create new task board</h4>
+              <h4 class="modal-title">Create new post</h4>
             </div>
             <div class="modal-body">
-              <form action="/" method="post">
+              <form action="{{ ImageUpload }}" method="post" name="CreatNewPostForm" enctype="multipart/form-data">
                 <div class="row">
                   <div class="col-sm-3"></div>
                   <div class="col-sm-6">
                     <center>
-                      <input type='textbox' class="form-control" name='NewTaskBoardName' id='NewTaskBoardName' placeholder="Enter new task board name" /required>
+                      <input type='textbox' class="form-control" name="NewPostCaption" id="NewPostCaption" placeholder="Add caption to your post here">
+                    </center>
+                  </div>
+                  <div class="col-sm-3"></div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12"><br></div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-3"></div>
+                  <div class="col-sm-6">
+                    <center>
+                      <input type='file' class="form-control" name='NewPostImage' id='NewPostImage' accept=".png, .jpg" onchange="return checkfile();" /required>
                     </center>
                   </div>
                   <div class="col-sm-3"></div>
@@ -116,7 +269,7 @@
                 <div class="row">
                   <div class="col-sm-4"></div>
                   <div class="col-sm-2">
-                    <input type='submit' class="btn btn-default" name='CreateTaskBoardButton' id='CreateTaskBoardButton' value='Create'>
+                    <input type='submit' class="btn btn-default" name='submitButton' id='CreateNewPostButton' value='Create'>
                   </div>
                   <div class="col-sm-2">
                     <input type="reset" class="btn btn-default" value="Reset">
@@ -128,7 +281,7 @@
           </div>
         </div>
       </div>
-<!-- Create Post Modal Code Ends Here -->
+<!-- Create New Post Modal Code Ends Here -->
 
 <!-- Search User Modal Code Starts Here -->
       <div name="SearchUserModal" id="SearchUserModal" style="margin-top:10%;" class="modal fade" role="dialog">
@@ -139,7 +292,7 @@
               <h4 class="modal-title">Search user by Username</h4>
             </div>
             <div class="modal-body">
-              <form action="/" method="post">
+              <form action="/ProfilePage" method="post">
                 <div class="row">
                   <div class="col-sm-3"></div>
                   <div class="col-sm-6">
