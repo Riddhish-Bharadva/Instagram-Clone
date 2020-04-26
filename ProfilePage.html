@@ -5,18 +5,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   </head>
-  <script>
-    function checkfile()
-    {
-      var fileName = document.getElementById("NewPostImage").value.toLowerCase();
-      if(!fileName.endsWith('.png') && !fileName.endsWith('.jpg'))
-      {
-        alert("Images with extensions .png or .jpg are allowed to upload.");
-        document.getElementById('CreatNewPostForm').reset();
-        return false;
-      }
-    }
-  </script>
   <style>
     .ProfilePageBody
     {

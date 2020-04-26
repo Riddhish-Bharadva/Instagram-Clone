@@ -61,13 +61,9 @@ class CreateNewPost(blobstore_handlers.BlobstoreUploadHandler):
         if PostsDB_Reference == None:
             PostsDB_Reference = PostsDB(id = userLoggedIn.email())
             PostsDB_Reference.user_Email = userLoggedIn.email()
-            PostsDB_Reference.post_Caption.append(post_Caption)
-            PostsDB_Reference.post_DateTime.append(DateTimeValue)
-            PostsDB_Reference.post_Image.append(Image.key())
-        else:
-            PostsDB_Reference.post_Caption.append(post_Caption)
-            PostsDB_Reference.post_DateTime.append(DateTimeValue)
-            PostsDB_Reference.post_Image.append(Image.key())
+        PostsDB_Reference.post_Caption.append(post_Caption)
+        PostsDB_Reference.post_DateTime.append(DateTimeValue)
+        PostsDB_Reference.post_Image.append(Image.key())
         PostsDB_Reference.put()
         self.redirect('/ProfilePage?notification=NewPostCreatedSuccessfully')
 

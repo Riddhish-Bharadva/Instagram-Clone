@@ -36,10 +36,12 @@ class SearchUser(webapp2.RequestHandler):
         Query = UsersDB.query().fetch()
         QueryResults = []
         for i in range(0,len(Query)):
-            if Query[i].user_Email.find(UserSearchKeyword) != -1:
-                QueryResults.append(Query[i].user_Email)
-            elif Query[i].user_Name.find(UserSearchKeyword) != -1:
-                QueryResults.append(Query.user_Email[i])
+            if Query[i].user_Email != None:
+                if Query[i].user_Email.find(UserSearchKeyword) != -1:
+                    QueryResults.append(Query[i].user_Email)
+            elif Query[i].user_Name != None:
+                if Query[i].user_Name.find(UserSearchKeyword) != -1:
+                    QueryResults.append(Query[i].user_Email)
 
         template_values = {
             'loginLink' : loginLink,
