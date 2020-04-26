@@ -56,7 +56,6 @@
   <body>
     <center>
       <div class="ProfilePageBody">
-        {% if userLoggedIn %}
           <nav class="navbar navbar-inverse">
             <div class="container-fluid">
               <div class="navbar-header">
@@ -70,11 +69,9 @@
               <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                   {% if userLoggedIn.user_Name %}
-                    <li><a href="/createNewPost">Create Post</a></li>
-                    <li><a href="/timeline">Timeline</a></li>
+                    <li><a href="/ProfilePage">Home</a></li>
                     <li><a href="/followers">Followers</a></li>
                     <li><a href="/following">Following</a></li>
-                    <li><a href="" data-toggle="modal" data-target="#SearchUserModal">Search User</a></li>
                   {% else %}
                     <li><a href="/ProfilePage">Username not selected for logged in user yet. Hence, no navigation options are available.</a></li>
                   {% endif %}
@@ -85,24 +82,6 @@
               </div>
             </div>
           </nav>
-          <div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div>
-          {% if notification == "" %}
-            <div class="notificationBar" style="background:Yellow;">
-              All notifications for any operations performed will be displayed here.
-            </div>
-          {% elif notification == "Username Selected" %}
-            <div class="notificationBar" style="background:Green;color:white;">
-              Username have been successfully updated for {{ userLoggedIn.user_Email }}.
-            </div>
-          {% elif notification == "Username Already Exist" %}
-            <div class="notificationBar" style="background:Red;color:white;">
-              Username selected already exist for some other user. Please try again.
-            </div>
-          {% elif notification == "NewPostCreatedSuccessfully" %}
-            <div class="notificationBar" style="background:Green;color:white;">
-              New post has been successfully created.
-            </div>
-          {% endif %}
           <div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div>
           <div class="row">
             <div class="col-sm-12"><br></div>
@@ -221,15 +200,6 @@
             </form>
           {% endif %}
           <div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div>
-        {% else %}
-          <ul class="nav">
-            <li>
-              <a href="{{ loginLink }}" class="ButtonBeforeLogin">
-                <span class="glyphicon glyphicon-log-in"></span> {{ loginStatus }}
-              </a>
-            </li>
-          </ul>
-        {% endif %}
       </div>
 
 <!-- Search User Modal Code Starts Here -->

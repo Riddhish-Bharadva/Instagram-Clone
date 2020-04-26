@@ -9,22 +9,16 @@ from google.appengine.api.images import get_serving_url
 from UsersDB import UsersDB
 from PostsDB import PostsDB
 from datetime import datetime
-from SearchUser import SearchUser
-from CreateNewPost import CreateNewPost
-from OtherUserProfile import OtherUserProfile
 
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),extensions=['jinja2.ext.autoescape'],autoescape=True)
 
-class ProfilePage(webapp2.RequestHandler):
+class CreateNewPost(blobstore_handlers.BlobstoreUploadHandler):
     def get(self):
         self.response.headers['content-type'] = 'text/html'
         userLoggedIn = users.get_current_user() # Here I am getting all details of logged in user.
-        posts_Data = []
-        image_Data = []
-        notification = ""
         followers_count = 0
         following_count = 0
-        NumberOfPosts = 0
+        ImageUpload = blobstore.create_upload_url("/createNewPost")
         if userLoggedIn: # If any user is logged in, there will be some data in userLoggedIn variable.
             loginLink = users.create_logout_url(self.request.uri)
             loginStatus = 'Logout'
@@ -36,12 +30,6 @@ class ProfilePage(webapp2.RequestHandler):
                 userLoggedIn = userDB_Reference
             else: # If user record exist in DB, variable will not be None.
                 userLoggedIn = userDB_Reference
-            posts_Data = PostsDB.query(PostsDB.user_Email == userLoggedIn.user_Email).get()
-            if posts_Data != None:
-                NumberOfPosts = len(posts_Data.post_Caption)
-                for i in range(0,NumberOfPosts):
-                    image_Data.append(get_serving_url(posts_Data.post_Image[i]))
-            notification = self.request.get('notification')
             if userLoggedIn.followers_List != None:
                 followers_count = len(userLoggedIn.followers_List) # Here count of followers will be fetched.
             if userLoggedIn.following_List != None:
@@ -54,35 +42,35 @@ class ProfilePage(webapp2.RequestHandler):
             'loginLink' : loginLink,
             'loginStatus' : loginStatus,
             'userLoggedIn' : userLoggedIn,
-            'posts_Data' : posts_Data,
-            'notification' : notification,
             'followers_count' : followers_count,
             'following_count' : following_count,
-            'NumberOfPosts' : NumberOfPosts,
-            'image_Data' : image_Data
+            'ImageUpload' : ImageUpload
         }
-        template = JINJA_ENVIRONMENT.get_template('ProfilePage.html')
+        template = JINJA_ENVIRONMENT.get_template('CreateNewPost.html')
         self.response.write(template.render(template_values))
 
     def post(self):
         self.response.headers['content-type'] = 'text/html'
         userLoggedIn = users.get_current_user()
-        ButtonOption = self.request.get('submitButton')
-        if ButtonOption == "Select": # This is functionality of selecting user name for first time.
-            FirstTimeUserName = self.request.get('FirstTimeUserName')
-            UsersDB_Reference = UsersDB.query(UsersDB.user_Name == FirstTimeUserName).get()
-            if UsersDB_Reference == None:
-                UsersDB_Reference = ndb.Key('UsersDB',userLoggedIn.email()).get()
-                UsersDB_Reference.user_Name = FirstTimeUserName
-                UsersDB_Reference.put()
-                self.redirect("/ProfilePage?notification=Username Selected")
-            else:
-                self.redirect("/ProfilePage?notification=Username Already Exist")
+        post_Caption = self.request.get('NewPostCaption')
+        if post_Caption == "":
+            post_Caption = "No caption given"
+        DateTimeValue = datetime.now()
+        Image = self.get_uploads()[0]
+        PostsDB_Reference = PostsDB.query(PostsDB.user_Email == userLoggedIn.email()).get()
+        if PostsDB_Reference == None:
+            PostsDB_Reference = PostsDB(id = userLoggedIn.email())
+            PostsDB_Reference.user_Email = userLoggedIn.email()
+            PostsDB_Reference.post_Caption.append(post_Caption)
+            PostsDB_Reference.post_DateTime.append(DateTimeValue)
+            PostsDB_Reference.post_Image.append(Image.key())
+        else:
+            PostsDB_Reference.post_Caption.append(post_Caption)
+            PostsDB_Reference.post_DateTime.append(DateTimeValue)
+            PostsDB_Reference.post_Image.append(Image.key())
+        PostsDB_Reference.put()
+        self.redirect('/ProfilePage?notification=NewPostCreatedSuccessfully')
 
 app = webapp2.WSGIApplication([
-    ('/',ProfilePage),
-    ('/ProfilePage',ProfilePage),
     ('/createNewPost',CreateNewPost),
-    ('/SearchUser',SearchUser),
-    ('/otherUserProfile',OtherUserProfile),
 ], debug=True)
