@@ -37,6 +37,7 @@ class CreateNewPost(blobstore_handlers.BlobstoreUploadHandler):
         else: # If no user is logged in, there will be no data in userLoggedIn variable.
             loginLink = users.create_login_url(self.request.uri)
             loginStatus = 'Login'
+            self.redirect('/ProfilePage')
 
         template_values = {
             'loginLink' : loginLink,

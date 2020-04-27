@@ -71,9 +71,28 @@ class OtherUserProfile(webapp2.RequestHandler):
     def post(self):
         self.response.headers['content-type'] = 'text/html'
         userLoggedIn = users.get_current_user()
+        CurrentUserProfile = ndb.Key('UsersDB', userLoggedIn.email()).get()
+        OtherUserEmail = self.request.get('user_Email')
+        OtherUserProfile = ndb.Key('UsersDB', OtherUserEmail).get()
         ButtonOption = self.request.get('submitButton')
         if ButtonOption == "Follow": # This is functionality of following user.
-            self.redirect('/ProfilePage')
+            CurrentUserProfile.following_List.append(OtherUserEmail)
+            OtherUserProfile.followers_List.append(userLoggedIn.email())
+            CurrentUserProfile.put()
+            OtherUserProfile.put()
+            self.redirect('/otherUserProfile?OtherUserEmail='+OtherUserEmail)
+        elif ButtonOption == 'Unfollow':
+            for i in range(0,len(CurrentUserProfile.following_List)):
+                if CurrentUserProfile.following_List[i] == OtherUserEmail:
+                    del CurrentUserProfile.following_List[i]
+                    CurrentUserProfile.put()
+                    break
+            for j in range(0,len(OtherUserProfile.followers_List)):
+                if OtherUserProfile.followers_List[j] == CurrentUserProfile.user_Email:
+                    del OtherUserProfile.followers_List[j]
+                    OtherUserProfile.put()
+                    break
+            self.redirect('/otherUserProfile?OtherUserEmail='+OtherUserEmail)
 
 app = webapp2.WSGIApplication([
     ('/otherUserProfile',OtherUserProfile),

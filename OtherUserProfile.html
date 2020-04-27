@@ -83,7 +83,9 @@
                   <a href="/followers?user_Email={{ otherUserProfile.user_Email }}">{{ followers_count }}</a>
                 </span>
               {% else %}
-                0
+              <span title="Click to view list of followers">
+                <a href="/followers?user_Email={{ otherUserProfile.user_Email }}">0</a>
+              </span>
               {% endif %}
             </div>
             <div class="col-sm-3"></div>
@@ -97,12 +99,14 @@
                   <a href="/following?user_Email={{ otherUserProfile.user_Email }}">{{ following_count }}</a>
                 </span>
               {% else %}
-                0
+                <span title="Click to view list of following">
+                  <a href="/following?user_Email={{ otherUserProfile.user_Email }}">0</a>
+                </span>
               {% endif %}
             </div>
             <div class="col-sm-3"></div>
           </div>
-          <form action="/otherUserProfile" method="post">
+          <form action="/otherUserProfile?user_Email={{ otherUserProfile.user_Email }}" method="post">
             {% if current_User_Following_Decision == 0 %}
               <div class="row">
                 <div class="col-sm-3"></div>

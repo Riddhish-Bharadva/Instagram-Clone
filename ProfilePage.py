@@ -12,6 +12,8 @@ from datetime import datetime
 from SearchUser import SearchUser
 from CreateNewPost import CreateNewPost
 from OtherUserProfile import OtherUserProfile
+from Followers import Followers
+from Following import Following
 
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),extensions=['jinja2.ext.autoescape'],autoescape=True)
 
@@ -85,4 +87,6 @@ app = webapp2.WSGIApplication([
     ('/createNewPost',CreateNewPost),
     ('/SearchUser',SearchUser),
     ('/otherUserProfile',OtherUserProfile),
+    ('/followers',Followers),
+    ('/following',Following)
 ], debug=True)

@@ -130,7 +130,9 @@
                   <a href="/followers">{{ followers_count }}</a>
                 </span>
               {% else %}
-                0
+              <span title="Click to view list of followers">
+                <a href="/followers">0</a>
+              </span>
               {% endif %}
             </div>
             <div class="col-sm-3"></div>
@@ -144,7 +146,9 @@
                   <a href="/following">{{ following_count }}</a>
                 </span>
               {% else %}
-                0
+              <span title="Click to view list of following">
+                <a href="/following">0</a>
+              </span>
               {% endif %}
             </div>
             <div class="col-sm-3"></div>
