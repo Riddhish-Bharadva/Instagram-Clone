@@ -20,7 +20,43 @@
       border:1px black solid;
       padding:10px;
     }
+    #toTop
+    {
+      background:Black;
+      color:white !important;
+      font-size:20px;
+      position:fixed;
+      bottom:25px;
+      right:25px;
+      display:None;
+      padding:20px;
+      border-radius:50px;
+    }
   </style>
+  <script>
+  $(document).ready(function()
+  {
+        $('body').append("<button id='toTop' class='backtotop'>Back To Top</button>");
+      	$(window).scroll(function () {
+  			if ($(this).scrollTop() != 0) {
+  				$('#toTop').fadeIn();
+  			} else {
+  				$('#toTop').fadeOut();
+  			}
+  		});
+      $('#toTop').click(function(){
+          $("html, body").animate({ scrollTop: 0 }, 2000);
+          return false;
+      });
+  });
+  </script>
+  <script>
+  function bs_back_to_top() {
+    wp_register_script( 'bs-back-to-top', get_stylesheet_directory_uri() . '/js/bs-back-to-top.js', array('jquery'), '1.0.0', true );
+    wp_enqueue_script( 'bs-back-to-top' );
+  }
+  add_action( 'wp_enqueue_scripts', 'bs_back_to_top', 99 );
+  </script>
   <body>
     <center>
       <div class="TimelinePageBody">

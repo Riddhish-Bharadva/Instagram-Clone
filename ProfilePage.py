@@ -73,6 +73,7 @@ class ProfilePage(webapp2.RequestHandler):
         ButtonOption = self.request.get('submitButton')
         if ButtonOption == "Select": # This is functionality of selecting user name for first time.
             FirstTimeUserName = self.request.get('FirstTimeUserName')
+            FirstTimeUserName = FirstTimeUserName.lower()
             UsersDB_Reference = UsersDB.query(UsersDB.user_Name == FirstTimeUserName).get()
             if UsersDB_Reference == None:
                 UsersDB_Reference = ndb.Key('UsersDB',userLoggedIn.email()).get()

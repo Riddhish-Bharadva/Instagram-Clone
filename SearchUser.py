@@ -33,6 +33,7 @@ class SearchUser(webapp2.RequestHandler):
             self.redirect('/ProfilePage')
 
         UserSearchKeyword = self.request.get('UserSearchKeyword')
+        UserSearchKeyword = UserSearchKeyword.lower()
         Query = UsersDB.query().fetch()
         QueryResults = []
         for i in range(0,len(Query)):
