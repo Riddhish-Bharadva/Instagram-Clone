@@ -131,7 +131,9 @@
           <div class="col-sm-2"></div>
           <div class="col-sm-8">
             {% for i in range(0,NumberOfComments) %}
-              {{ Commenting_User[i] }} : {{ Comments[i] }}
+              <a href="/otherUserProfile?OtherUsername={{ Commenting_User[i] }}">
+                {{ Commenting_User[i] }}
+              </a> : {{ Comments[i] }}
               <br>
               <br>
             {% endfor %}

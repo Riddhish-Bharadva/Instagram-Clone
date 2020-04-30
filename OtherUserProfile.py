@@ -17,6 +17,10 @@ class OtherUserProfile(webapp2.RequestHandler):
     def get(self):
         self.response.headers['content-type'] = 'text/html'
         OtherUserEmail = self.request.get('OtherUserEmail')
+        if OtherUserEmail == "":
+            OtherUsername = self.request.get('OtherUsername')
+            OtherUserEmail = UsersDB.query(UsersDB.user_Name == OtherUsername).fetch()
+            OtherUserEmail = OtherUserEmail[0].user_Email
         posts_Data = []
         image_Data = []
         followers_count = 0

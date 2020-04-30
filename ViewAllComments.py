@@ -22,12 +22,12 @@ class ViewAllComments(webapp2.RequestHandler):
         Comments = []
         Commenting_User = []
         NumberOfComments = 0
+        user_Email = self.request.get('user_Email') # Getting user email id passed in url.
+        image_Key = self.request.get('image_Key') # Getting image key passed in url.
+        post_Image_URL = get_serving_url(image_Key) # Storing image url of passed image Key.
         if userLoggedIn: # If any user is logged in, there will be some data in userLoggedIn variable.
             loginLink = users.create_logout_url(self.request.uri)
             loginStatus = 'Logout'
-            user_Email = self.request.get('user_Email') # Getting user email id passed in url.
-            image_Key = self.request.get('image_Key') # Getting image key passed in url.
-            post_Image_URL = get_serving_url(image_Key) # Storing image url of passed image Key.
             user_Details = ndb.Key('UsersDB',user_Email).get() # Fetching data from UsersDB to get all details of user.
             post_Data = ndb.Key('PostsDB',user_Email).get() # Fetching data from PostsDB to get all posts information of user.
             for i in range(0,len(post_Data.post_Caption)):

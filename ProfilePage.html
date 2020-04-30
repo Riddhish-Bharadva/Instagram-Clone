@@ -237,17 +237,23 @@
                   <div class="col-sm-8">
                     {% if NumberOfComments[i] <= 5 %}
                       {% for j in range(NumberOfComments[i]-1,-1,-1) %}
-                        {{ Commenting_User[i][j] }} : {{ Comments[i][j] }}
+                        <a href="/otherUserProfile?OtherUsername={{ Commenting_User[i][j] }}">
+                          {{ Commenting_User[i][j] }}
+                        </a> : {{ Comments[i][j] }}
                         <br>
                       {% endfor %}
                     {% elif NumberOfComments[i] == 0 %}
                       {% for j in range(NumberOfComments[i]-1,-1,-1) %}
-                        {{ Commenting_User[i][j] }} : {{ Comments[i][j] }}
+                        <a href="/otherUserProfile?OtherUsername={{ Commenting_User[i][j] }}">
+                          {{ Commenting_User[i][j] }}
+                        </a> : {{ Comments[i][j] }}
                         <br>
                       {% endfor %}
                     {% else %}
                       {% for j in range(NumberOfComments[i]-1,NumberOfComments[i]-6,-1) %}
-                        {{ Commenting_User[i][j] }} : {{ Comments[i][j] }}
+                        <a href="/otherUserProfile?OtherUsername={{ Commenting_User[i][j] }}">
+                          {{ Commenting_User[i][j] }}
+                        </a> : {{ Comments[i][j] }}
                         <br>
                       {% endfor %}
                       <br>
