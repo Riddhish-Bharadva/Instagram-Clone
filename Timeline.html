@@ -84,74 +84,78 @@
           </div>
         </nav>
         <div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div>
-        {% for i in range(0,timeline_Post_Count) %}
-          <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-4 DetailsTable">
-              Post by : <a href="/otherUserProfile?OtherUserEmail={{ timeline_Post_Users[i] }}">{{ timeline_Post_Users[i] }}</a>
-            </div>
-            <div class="col-sm-4 DetailsTable">
-              Post Caption : {{ timeline_Post_Captions[i] }}
-            </div>
-            <div class="col-sm-2"></div>
-          </div>
-          <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-8 DetailsTable">
-              <img src="{{ timeline_Post_Image_Urls[i] }}" alt="Error while displaying image." style="max-width:500px;max-height:600px;">
-            </div>
-            <div class="col-sm-2"></div>
-          </div>
-          <br>
-          <form action="/timeline?image_Key={{ image_Key[i] }}" method="post">
+        {% if timeline_Post_Count != 0 %}
+          {% for i in range(0,timeline_Post_Count) %}
             <div class="row">
               <div class="col-sm-2"></div>
-              <div class="col-sm-6">
-                <textarea class="form-control" name='CommentBox' placeholder="Start typing you comment here.." maxlength="200" /required></textarea>
+              <div class="col-sm-4 DetailsTable">
+                Post by : <a href="/otherUserProfile?OtherUserEmail={{ timeline_Post_Users[i] }}">{{ timeline_Post_Users[i] }}</a>
               </div>
-              <div class="col-sm-2">
-                <input type="submit" class="btn btn-default" name="submitButton" value="Comment">
-                <input type="reset" class="btn btn-default" value="Reset">
+              <div class="col-sm-4 DetailsTable">
+                Post Caption : {{ timeline_Post_Captions[i] }}
+              </div>
+              <div class="col-sm-2"></div>
+            </div>
+            <div class="row">
+              <div class="col-sm-2"></div>
+              <div class="col-sm-8 DetailsTable">
+                <img src="{{ timeline_Post_Image_Urls[i] }}" alt="Error while displaying image." style="max-width:500px;max-height:600px;">
               </div>
               <div class="col-sm-2"></div>
             </div>
             <br>
-            <div class="row">
-              <div class="col-sm-2"></div>
-              <div class="col-sm-8">
-                {% if NumberOfComments[i] <= 5 %}
-                  {% for j in range(NumberOfComments[i]-1,-1,-1) %}
-                    <a href="/otherUserProfile?OtherUsername={{ Commenting_User[i][j] }}">
-                      {{ Commenting_User[i][j] }}
-                    </a> : {{ Comments[i][j] }}
-                    <br>
-                  {% endfor %}
-                {% elif NumberOfComments[i] == 0 %}
-                  {% for j in range(NumberOfComments[i]-1,-1,-1) %}
-                    <a href="/otherUserProfile?OtherUsername={{ Commenting_User[i][j] }}">
-                      {{ Commenting_User[i][j] }}
-                    </a> : {{ Comments[i][j] }}
-                    <br>
-                  {% endfor %}
-                {% else %}
-                  {% for j in range(NumberOfComments[i]-1,NumberOfComments[i]-6,-1) %}
-                    <a href="/otherUserProfile?OtherUsername={{ Commenting_User[i][j] }}">
-                      {{ Commenting_User[i][j] }}
-                    </a> : {{ Comments[i][j] }}
-                    <br>
-                  {% endfor %}
-                  <br>
-                  <a href="/ViewAllComments?OtherUserEmail={{ timeline_Post_Users[i] }}&image_Key={{ image_Key[i] }}">
-                    Click here to view all comments.
-                  </a>
-                  <br>
-                  <br>
-                {% endif %}
+            <form action="/timeline?image_Key={{ image_Key[i] }}" method="post">
+              <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-6">
+                  <textarea class="form-control" name='CommentBox' placeholder="Start typing you comment here.." maxlength="200" /required></textarea>
+                </div>
+                <div class="col-sm-2">
+                  <input type="submit" class="btn btn-default" name="submitButton" value="Comment">
+                  <input type="reset" class="btn btn-default" value="Reset">
+                </div>
+                <div class="col-sm-2"></div>
               </div>
-              <div class="col-sm-2"></div>
-            </div>
-          </form>
-        {% endfor %}
+              <br>
+              <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                  {% if NumberOfComments[i] <= 5 %}
+                    {% for j in range(NumberOfComments[i]-1,-1,-1) %}
+                      <a href="/otherUserProfile?OtherUsername={{ Commenting_User[i][j] }}">
+                        {{ Commenting_User[i][j] }}
+                      </a> : {{ Comments[i][j] }}
+                      <br>
+                    {% endfor %}
+                  {% elif NumberOfComments[i] == 0 %}
+                    {% for j in range(NumberOfComments[i]-1,-1,-1) %}
+                      <a href="/otherUserProfile?OtherUsername={{ Commenting_User[i][j] }}">
+                        {{ Commenting_User[i][j] }}
+                      </a> : {{ Comments[i][j] }}
+                      <br>
+                    {% endfor %}
+                  {% else %}
+                    {% for j in range(NumberOfComments[i]-1,NumberOfComments[i]-6,-1) %}
+                      <a href="/otherUserProfile?OtherUsername={{ Commenting_User[i][j] }}">
+                        {{ Commenting_User[i][j] }}
+                      </a> : {{ Comments[i][j] }}
+                      <br>
+                    {% endfor %}
+                    <br>
+                    <a href="/ViewAllComments?OtherUserEmail={{ timeline_Post_Users[i] }}&image_Key={{ image_Key[i] }}">
+                      Click here to view all comments.
+                    </a>
+                    <br>
+                    <br>
+                  {% endif %}
+                </div>
+                <div class="col-sm-2"></div>
+              </div>
+            </form>
+          {% endfor %}
+        {% else %}
+          Unfortunately there are no posts to display.
+        {% endif %}
         <div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div>
       </div>
 

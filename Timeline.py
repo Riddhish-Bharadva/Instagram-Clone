@@ -50,48 +50,53 @@ class Timeline(webapp2.RequestHandler):
             NumberOfUsers = len(Following_Users)
             for i in Following_Users: # I am going to first put all data of all users followed by currently loggedin user into single list.
                 post_Data = ndb.Key('PostsDB',i).get()
-                Following_Users_Posts_Count.append(len(post_Data.post_Image))
-                for j in range(len(post_Data.post_Image)-1,-1,-1): # I am running this loop in descending order to fetch latest data first in list.
-                    temp_Post_Caption.append(post_Data.post_Caption[j])
-                    temp_Post_Urls.append(get_serving_url(post_Data.post_Image[j]))
-                    temp_Post_Key.append(post_Data.post_Image[j])
-                    timeline_Post_Count = timeline_Post_Count + 1
-                # Now I am appending the above fetched data into temporary lists.
-                temp_Timeline_Post_Captions.append(temp_Post_Caption)
-                temp_Timeline_Post_Image_Urls.append(temp_Post_Urls)
-                temp_Timeline_Post_Key.append(temp_Post_Key)
-                # Now I will empty below temporary lists to fetch data for next user in next iteration of this for loop.
-                temp_Post_Caption = []
-                temp_Post_Urls = []
-                temp_Post_Key = []
-            Max_Loop_Run = max(Following_Users_Posts_Count) # Here, I am defining maximum times my below for loop will run. This is because I want to run my loop for maximum number of post a user is having amongst list of users in Following_Users list.
-            for i in range(0,Max_Loop_Run):
-                for j in range(0,NumberOfUsers):
-                    if i < len(temp_Timeline_Post_Captions[j]):
-                        timeline_Post_Captions.append(temp_Timeline_Post_Captions[j][i]) # I am appending caption of 1st user then 2nd user then 3rd user and so on till for loop ends.
-                        timeline_Post_Image_Urls.append(temp_Timeline_Post_Image_Urls[j][i]) # I am appending Image URLs of 1st user then 2nd user then 3rd user and so on till for loop ends.
-                        timeline_Post_Key.append(temp_Timeline_Post_Key[j][i]) # I am appending Image Keys of 1st user then 2nd user then 3rd user and so on till for loop ends.
-            if timeline_Post_Count > 50: # In case number of Posts in defined list is more then 50, it will set timeline_Post_Count to 50 as we want to display only last 50 posts in reverse chronological order.
-                timeline_Post_Count = 50
-            # Below if logic to add users to each posts.
-            user = 0
-            for i in range(0,timeline_Post_Count):
-                timeline_Post_Users.append(Following_Users[user])
-                if user != 2:
-                    user = user + 1
-                elif user == 2:
-                    user = 0
-
-            for i in range(0,len(timeline_Post_Key)):
-                comments_Data = ndb.Key('CommentsDB',str(timeline_Post_Key[i])).get()
-                if comments_Data != None:
-                    Comments.append(comments_Data.comment)
-                    Commenting_User.append(comments_Data.commenting_User)
-                    NumberOfComments.append(len(comments_Data.comment))
+                if post_Data != None:
+                    Following_Users_Posts_Count.append(len(post_Data.post_Image))
+                    for j in range(len(post_Data.post_Image)-1,-1,-1): # I am running this loop in descending order to fetch latest data first in list.
+                        temp_Post_Caption.append(post_Data.post_Caption[j])
+                        temp_Post_Urls.append(get_serving_url(post_Data.post_Image[j]))
+                        temp_Post_Key.append(post_Data.post_Image[j])
+                        timeline_Post_Count = timeline_Post_Count + 1
+                    # Now I am appending the above fetched data into temporary lists.
+                    temp_Timeline_Post_Captions.append(temp_Post_Caption)
+                    temp_Timeline_Post_Image_Urls.append(temp_Post_Urls)
+                    temp_Timeline_Post_Key.append(temp_Post_Key)
+                    # Now I will empty below temporary lists to fetch data for next user in next iteration of this for loop.
+                    temp_Post_Caption = []
+                    temp_Post_Urls = []
+                    temp_Post_Key = []
                 else:
-                    Comments.append([])
-                    Commenting_User.append([])
-                    NumberOfComments.append(0)
+                    # Now I am appending 0 and blank list in case there are no posts.
+                    Following_Users_Posts_Count.append(0)
+                    temp_Timeline_Post_Captions.append([])
+                    temp_Timeline_Post_Image_Urls.append([])
+                    temp_Timeline_Post_Key.append([])
+            if Following_Users_Posts_Count != []:
+                Max_Loop_Run = max(Following_Users_Posts_Count) # Here, I am defining maximum times my below for loop will run. This is because I want to run my loop for maximum number of post a user is having amongst list of users in Following_Users list.
+                for i in range(0,Max_Loop_Run):
+                    for j in range(0,NumberOfUsers):
+                        if i < len(temp_Timeline_Post_Captions[j]):
+                            timeline_Post_Captions.append(temp_Timeline_Post_Captions[j][i]) # I am appending caption of 1st user then 2nd user then 3rd user and so on till for loop ends.
+                            timeline_Post_Image_Urls.append(temp_Timeline_Post_Image_Urls[j][i]) # I am appending Image URLs of 1st user then 2nd user then 3rd user and so on till for loop ends.
+                            timeline_Post_Key.append(temp_Timeline_Post_Key[j][i]) # I am appending Image Keys of 1st user then 2nd user then 3rd user and so on till for loop ends.
+                if timeline_Post_Count > 50: # In case number of Posts in defined list is more then 50, it will set timeline_Post_Count to 50 as we want to display only last 50 posts in reverse chronological order.
+                    timeline_Post_Count = 50
+                # Below if logic to fetch users of each posts.
+                image_URLs = timeline_Post_Image_Urls
+                for i in range(0,timeline_Post_Count):
+                    temp_Reference = PostsDB.query(PostsDB.post_Image == timeline_Post_Key[i]).fetch()
+                    timeline_Post_Users.append(temp_Reference[0].user_Email)
+                # Below is logic of fetching comments.
+                for i in range(0,len(timeline_Post_Key)):
+                    comments_Data = ndb.Key('CommentsDB',str(timeline_Post_Key[i])).get()
+                    if comments_Data != None:
+                        Comments.append(comments_Data.comment)
+                        Commenting_User.append(comments_Data.commenting_User)
+                        NumberOfComments.append(len(comments_Data.comment))
+                    else:
+                        Comments.append([])
+                        Commenting_User.append([])
+                        NumberOfComments.append(0)
         else: # If no user is logged in, there will be no data in userLoggedIn variable.
             loginLink = users.create_login_url(self.request.uri)
             loginStatus = 'Login'
