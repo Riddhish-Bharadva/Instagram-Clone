@@ -8,6 +8,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 from google.appengine.api.images import get_serving_url
 from UsersDB import UsersDB
 from PostsDB import PostsDB
+from CommentsDB import CommentsDB
 from datetime import datetime
 
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),extensions=['jinja2.ext.autoescape'],autoescape=True)
@@ -24,6 +25,10 @@ class OtherUserProfile(webapp2.RequestHandler):
         OtherUserProfile = []
         userLoggedIn = users.get_current_user()
         current_User_Following_Decision = 0
+        image_Key = []
+        Comments = []
+        Commenting_User = []
+        NumberOfComments = []
         if userLoggedIn: # If any user is logged in, there will be some data in userLoggedIn variable.
             loginLink = users.create_logout_url(self.request.uri)
             loginStatus = 'Logout'
@@ -44,6 +49,17 @@ class OtherUserProfile(webapp2.RequestHandler):
                     NumberOfPosts = len(posts_Data.post_Caption)
                     for i in range(0,NumberOfPosts):
                         image_Data.append(get_serving_url(posts_Data.post_Image[i]))
+                        image_Key.append(posts_Data.post_Image[i])
+                for i in range(0,len(image_Key)):
+                    comments_Data = ndb.Key('CommentsDB',str(image_Key[i])).get()
+                    if comments_Data != None:
+                        Comments.append(comments_Data.comment)
+                        Commenting_User.append(comments_Data.commenting_User)
+                        NumberOfComments.append(len(comments_Data.comment))
+                    else:
+                        Comments.append([])
+                        Commenting_User.append([])
+                        NumberOfComments.append(0)
                 if OtherUserProfile.followers_List != None:
                     followers_count = len(OtherUserProfile.followers_List) # Here count of followers will be fetched.
                 if OtherUserProfile.following_List != None:
@@ -63,7 +79,11 @@ class OtherUserProfile(webapp2.RequestHandler):
             'following_count' : following_count,
             'NumberOfPosts' : NumberOfPosts,
             'image_Data' : image_Data,
-            'current_User_Following_Decision' : current_User_Following_Decision
+            'current_User_Following_Decision' : current_User_Following_Decision,
+            'image_Key' : image_Key,
+            'Comments' : Comments,
+            'Commenting_User' : Commenting_User,
+            'NumberOfComments' : NumberOfComments,
         }
         template = JINJA_ENVIRONMENT.get_template('OtherUserProfile.html')
         self.response.write(template.render(template_values))
@@ -92,6 +112,19 @@ class OtherUserProfile(webapp2.RequestHandler):
                     del OtherUserProfile.followers_List[j]
                     OtherUserProfile.put()
                     break
+            self.redirect('/otherUserProfile?OtherUserEmail='+OtherUserEmail)
+        elif ButtonOption == "Comment":
+            userLoggedIn = ndb.Key('UsersDB',userLoggedIn.email()).get()
+            image_Key = self.request.get('image_Key')
+            CommentBox = self.request.get('CommentBox')
+            comments_Data = ndb.Key('CommentsDB',image_Key).get()
+            if comments_Data == None:
+                comments_Data = CommentsDB(id=str(image_Key))
+            comments_Data.commenting_User.append(userLoggedIn.user_Name)
+            comments_Data.comment.append(CommentBox)
+            comments_Data.put()
+            self.redirect('/otherUserProfile?OtherUserEmail='+OtherUserEmail)
+        else:
             self.redirect('/otherUserProfile?OtherUserEmail='+OtherUserEmail)
 
 app = webapp2.WSGIApplication([

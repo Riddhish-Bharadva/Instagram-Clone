@@ -1,0 +1,146 @@
+<html>
+  <head>
+    <title>Cloud Computing</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </head>
+  <style>
+    .ViewAllCommentsBody
+    {
+      width:80%;
+    }
+    .navbar
+    {
+      margin-top:1%;
+      border-radius: 10px;
+    }
+    .DetailsTable
+    {
+      border:1px black solid;
+      padding:10px;
+    }
+    #toTop
+    {
+      background:Black;
+      color:white !important;
+      font-size:20px;
+      position:fixed;
+      bottom:25px;
+      right:25px;
+      display:None;
+      padding:20px;
+      border-radius:50px;
+    }
+  </style>
+  <script>
+  $(document).ready(function()
+  {
+        $('body').append("<button id='toTop' class='backtotop'>Back To Top</button>");
+        $(window).scroll(function () {
+        if ($(this).scrollTop() != 0) {
+          $('#toTop').fadeIn();
+        } else {
+          $('#toTop').fadeOut();
+        }
+      });
+      $('#toTop').click(function(){
+          $("html, body").animate({ scrollTop: 0 }, 2000);
+          return false;
+      });
+  });
+  </script>
+  <script>
+  function bs_back_to_top() {
+    wp_register_script( 'bs-back-to-top', get_stylesheet_directory_uri() . '/js/bs-back-to-top.js', array('jquery'), '1.0.0', true );
+    wp_enqueue_script( 'bs-back-to-top' );
+  }
+  add_action( 'wp_enqueue_scripts', 'bs_back_to_top', 99 );
+  </script>
+  <body>
+    <center>
+      <div class="ViewAllCommentsBody">
+        <nav class="navbar navbar-inverse">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="/ProfilePage">Cloud Computing Assignment 3</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                <li><a href="/ProfilePage">Home</a></li>
+                <li><a href="/timeline">Timeline</a></li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="{{ loginLink }}"><span class="glyphicon glyphicon-log-in"></span> {{ loginStatus }}</a></li>
+              </ul>
+            </div>
+          </div>
+          </nav>
+        <div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div>
+        <b>Below is user details who created this post.</b>
+        <div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div>
+        <div class="row">
+          <div class="col-sm-3"></div>
+          <div class="col-sm-3 DetailsTable">Email id :</div>
+          <div class="col-sm-3 DetailsTable">{{ user_Email }}</div>
+          <div class="col-sm-3"></div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3"></div>
+          <div class="col-sm-3 DetailsTable">Username :</div>
+          <div class="col-sm-3 DetailsTable">{{ user_Details.user_Name }}</div>
+          <div class="col-sm-3"></div>
+        </div>
+        <div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div>
+        <b>Below is the post.</b>
+        <div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div>
+        <div class="row">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-8 DetailsTable">
+            Post Caption : {{ post_Caption }}
+          </div>
+          <div class="col-sm-2"></div>
+        </div>
+        <div class="row">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-8 DetailsTable">
+            <img src="{{ post_Image_URL }}" alt="Error while displaying image." style="max-width:500px;max-height:600px;">
+          </div>
+          <div class="col-sm-2"></div>
+        </div>
+        <br>
+        <form action="/ViewAllComments?user_Email={{ user_Email }}&image_Key={{ image_Key }}" method="post">
+        <div class="row">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-6">
+            <textarea class="form-control" name='CommentBox' placeholder="Start typing you comment here.." maxlength="200" /required></textarea>
+          </div>
+          <div class="col-sm-2">
+            <input type="submit" class="btn btn-default" name="submitButton" value="Comment">
+            <input type="reset" class="btn btn-default" value="Reset">
+          </div>
+          <div class="col-sm-2"></div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-8">
+            {% for i in range(0,NumberOfComments) %}
+              {{ Commenting_User[i] }} : {{ Comments[i] }}
+              <br>
+              <br>
+            {% endfor %}
+          </div>
+          <div class="col-sm-2"></div>
+        </div>
+        </form>
+        <div style="border-top:1px solid black;margin-top:10px;padding:0px;padding-bottom:10px;"></div>
+      </div>
+    </center>
+  </body>
+</html>
