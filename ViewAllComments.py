@@ -35,10 +35,11 @@ class ViewAllComments(webapp2.RequestHandler):
                     post_Caption = post_Data.post_Caption[i]
                     break
             comments_Data = ndb.Key('CommentsDB',image_Key).get()
-            for i in range(len(comments_Data.comment)-1,-1,-1):
-                Commenting_User.append(comments_Data.commenting_User[i])
-                Comments.append(comments_Data.comment[i])
-            NumberOfComments = len(Comments)
+            if comments_Data != None:
+                for i in range(len(comments_Data.comment)-1,-1,-1):
+                    Commenting_User.append(comments_Data.commenting_User[i])
+                    Comments.append(comments_Data.comment[i])
+                NumberOfComments = len(Comments)
         else: # If no user is logged in, there will be no data in userLoggedIn variable.
             loginLink = users.create_login_url(self.request.uri)
             loginStatus = 'Login'
