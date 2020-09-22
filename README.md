@@ -1,7 +1,7 @@
 # Task-Manager
 ** Version 1.0.0 **
 ## Overview
-This application was created for educational purpose. The main aim for creating this application is to demonstrate how instagram works.
+This application is created for educational purpose. The main aim for creating this application is to demonstrate how instagram works.
 ## Features
 <!-- UL -->
 * Registering a new user when logged in for first time.
