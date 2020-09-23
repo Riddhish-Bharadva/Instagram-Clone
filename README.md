@@ -1,4 +1,4 @@
-# Task-Manager
+# Instagram-Clone
 ** Version 1.0.0 **
 ## Overview
 This application is created for educational purpose. The main aim for creating this application is to demonstrate how instagram works.
